@@ -29,6 +29,10 @@ const Article = connection.define('article', {
         msg: 'Body must be atleast 3 chars and less than 10 chars'
       }
     }
+  },
+  approved: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false
   }
 }, {
   hooks: {
@@ -52,9 +56,17 @@ connection
     force: true
   })
   .then(() => {
-    return Article.create({
-      title: 'Blasdasd',
-      body: 'hedsadas'
+    return Article.bulkCreate([
+      {
+        title: 'dani',
+        body: 'blaldsadasdas'
+      },
+      {
+        title: 'dandsai',
+        body: 'blaldsaadasddasdas'
+      },
+    ], {
+      fields: ['title', 'body']
     })
   })
   .catch(err => {

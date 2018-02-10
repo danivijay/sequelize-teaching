@@ -15,26 +15,46 @@ connection
   })
 
 const Article = connection.define('article', {
-  slug: {
-    type: Sequelize.STRING,
-    primaryKey: true
-  },
   title: {
     type: Sequelize.STRING,
     unique: true,
-    allowNull: false
+    allowNull: false,
+    valiate: {
+      startsWithCapitalLetter(titleVal) {
+        console.log('0', titleVal.charAt(0))
+        if (titleVal.charAt(0) === titleVal.charAt(0).toUpperCase()) {
+          // ...
+          console.log('1')
+        } else {
+          console.log('2')
+          throw new Error('Title first char should be uppercase')
+        }
+      }
+    }
   },
   body: {
     type: Sequelize.STRING,
-    defaultValue: 'Coming Soon!'
+    defaultValue: 'Coming Soon!',
+    validate: {
+      len: {
+        args: [3, 100],
+        msg: 'Body must be atleast 3 chars and less than 10 chars'
+      }
+    }
   }
-}, {
-  timestamps: false
 })
 
-connection.sync({
-  force: true,
-  logging: console.log
-}).then(() => {
- console.log('Done')
-})
+connection
+  .sync({
+    force: true,
+    logging: console.log
+  })
+  .then(() => {
+    return Article.create({
+      title: 'aBl',
+      body: 'hedsadas'
+    })
+  })
+  .catch(err => {
+    console.log(err)
+  })

@@ -18,19 +18,7 @@ const Article = connection.define('article', {
   title: {
     type: Sequelize.STRING,
     unique: true,
-    allowNull: false,
-    valiate: {
-      startsWithCapitalLetter(titleVal) {
-        console.log('0', titleVal.charAt(0))
-        if (titleVal.charAt(0) === titleVal.charAt(0).toUpperCase()) {
-          // ...
-          console.log('1')
-        } else {
-          console.log('2')
-          throw new Error('Title first char should be uppercase')
-        }
-      }
-    }
+    allowNull: false
   },
   body: {
     type: Sequelize.STRING,
@@ -42,16 +30,30 @@ const Article = connection.define('article', {
       }
     }
   }
+}, {
+  hooks: {
+    beforeValidate() {
+      console.log('beforeValidate')
+    },
+    afterValidate() {
+      console.log('afterValidate')
+    },
+    beforeCreate() {
+      console.log('beforeCreate')
+    },
+    afterCreate() {
+      console.log('afterCreate')
+    }
+  }
 })
 
 connection
   .sync({
-    force: true,
-    logging: console.log
+    force: true
   })
   .then(() => {
     return Article.create({
-      title: 'aBl',
+      title: 'Blasdasd',
       body: 'hedsadas'
     })
   })
